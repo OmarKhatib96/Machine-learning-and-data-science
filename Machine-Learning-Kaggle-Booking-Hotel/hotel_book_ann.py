@@ -82,7 +82,7 @@ csv_logger =tf.keras.callbacks.CSVLogger('log.csv')
  
 
 # Fitting the ANN to the Training set
-classifier.fit(X_train, y_train, batch_size = 15, epochs = 5,callbacks=[csv_logger])
+classifier.fit(X_train, y_train, batch_size = 15, epochs = 15,callbacks=[csv_logger])
 
 
 # Predicting the Test set results
@@ -136,11 +136,10 @@ def plot_log(filename, show=None):
             plt.plot(values[:, idx], values[:, i], label=key)
     plt.legend()
     plt.title('Training and validation accuracy')
-    if show is not None:
-        fig.savefig(join(show, 'log.png'))
-    else:
-        plt.show()
+    plt.show()
+
+
 
     
 
-    plot_log(join('log.csv'),show=True)
+    plot_log('log.csv'),show=None)
