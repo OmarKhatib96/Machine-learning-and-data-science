@@ -8,20 +8,30 @@ import seaborn as sns
 # Importing the dataset
 dataset = pd.read_csv('hotel_bookings.csv')
 print(dataset.head())
-variable=0
-for col in dataset.columns: 
-    print(col) 
-    variable=variable+1
-    print(variable)
 
-X = dataset.iloc[0:40000, [7,8,9,10,11,16,17,18,29]].values
+X = dataset.iloc[0:40000, [0,7,8,9,10,11,16,17,18,29]].values
 y = dataset.iloc[0:40000, 1].values
 
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 labelencoder = LabelEncoder()
+onehotencoder = OneHotEncoder()
+X[:, 0] = labelencoder.fit_transform(X[:, 0])
+onehotencoder.fit(X)
+X=onehotencoder.transform(X).toarray()
+# Avoiding the Dummy Variable Trap
+X = X[:, 1:]
+#X[:, 0] = labelencoder.fit_transform(X[:, 0])
+
+print(X[0])
+
+#onehotencoder = OneHotEncoder()
+#X = onehotencoder.fit_transform(X).toarray()
+
+
+
 
 from sklearn.model_selection import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.14, random_state = 0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.10, random_state = 0)
 #Feature Scaling
 from sklearn.preprocessing import StandardScaler
 sc=StandardScaler()
@@ -31,6 +41,8 @@ X_test=sc.transform(X_test)
 from sklearn.linear_model import LogisticRegression
 classifier = LogisticRegression(random_state = 0)
 classifier.fit(X_train, y_train)
+
+
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
 # Making the Confusion Matrix
@@ -38,6 +50,7 @@ from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
 print("Accuracy=",(100*cm[0][0]+cm[1][1])/(cm[0][0]+cm[1][1]+cm[1][0]+cm[0][1]),"%")
+
 # Visualising the Training set results
 from matplotlib.colors import ListedColormap
 X_set, y_set = X_train, y_train
